@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-11-25T18:42:18Z",
+ "generated_at": "2026-11-26T02:01:25Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
- "current_tip_day": "2026-11-25",
+ "current_tip_day": "2026-11-26",
  "leagues_with_current_week_data": 16,
  "missing_leagues": [],
  "missing_leagues_previous_week": [],
@@ -16,9 +16,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 708,
  "actual_candidate_rows": 700,
- "panel_rows": 1424,
+ "panel_rows": 1464,
  "settled_rows": 1273,
- "pending_rows": 151,
+ "pending_rows": 191,
  "clv_certified_rows": 610,
  "clv_coverage": 0.4792,
  "protected_tracks_modified": false,
@@ -26,7 +26,7 @@
   "Argentina Primera Division": {
    "current": {
     "league_week_id": "Argentina Primera Division|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 7,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 5,
@@ -37,19 +37,19 @@
     "markets": {
      "OU25": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 28,
@@ -894,7 +894,7 @@
   "Mexico Liga MX": {
    "current": {
     "league_week_id": "Mexico Liga MX|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 5,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 5,
@@ -905,19 +905,19 @@
     "markets": {
      "OU25": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 20,

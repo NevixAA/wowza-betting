@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-25T18:42:18Z",
+ "generated_at": "2026-11-26T02:01:25Z",
  "panel_version": "LWR-1",
  "selection_mode": "WEEKLY_LEAGUE_RESEARCH",
  "note": "Research panel, not bets. FROZEN rows were fixed at the week lock (first kickoff of the league-week) from first-sight scores; PROVISIONAL rows may still change until the lock.",
@@ -9,7 +9,7 @@
    "top5": {
     "OU25": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "7279ffbe34b0e6508621ddd96ee9f58f",
       "home_team": "Boca Juniors",
       "away_team": "Independiente Rivadavia",
@@ -23,7 +23,7 @@
       "p_market_fair": "0.526419",
       "odds": "1.8",
       "legacy_tier": "AVOID",
-      "legacy_rank": 4,
+      "legacy_rank": "4",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -31,10 +31,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 2,
+      "league_market_rank": "2",
       "fixture_id": "12d8d17b18ba164a3ed6b61efca82f5e",
       "home_team": "Instituto de C\u00f3rdoba",
       "away_team": "River Plate",
@@ -48,7 +48,7 @@
       "p_market_fair": "0.620886",
       "odds": "1.55",
       "legacy_tier": "AVOID",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -56,10 +56,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 3,
+      "league_market_rank": "3",
       "fixture_id": "3c55be4d38980e11540c96a994695d51",
       "home_team": "Rosario Central",
       "away_team": "Barracas Central",
@@ -73,7 +73,7 @@
       "p_market_fair": "0.550425",
       "odds": "1.74",
       "legacy_tier": "AVOID",
-      "legacy_rank": 2,
+      "legacy_rank": "2",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -81,10 +81,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 4,
+      "league_market_rank": "4",
       "fixture_id": "ae74ca664c7e7b2ba3b1a7ddb2d5f542",
       "home_team": "Velez Sarsfield BA",
       "away_team": "Independiente",
@@ -98,7 +98,7 @@
       "p_market_fair": "0.576085",
       "odds": "1.64",
       "legacy_tier": "AVOID",
-      "legacy_rank": 5,
+      "legacy_rank": "5",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -106,10 +106,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 5,
+      "league_market_rank": "5",
       "fixture_id": "8799cd4788843ece1b91f71b59c955eb",
       "home_team": "Rosario Central",
       "away_team": "Barracas Central",
@@ -123,7 +123,7 @@
       "p_market_fair": "0.549386",
       "odds": "1.74",
       "legacy_tier": "AVOID",
-      "legacy_rank": 3,
+      "legacy_rank": "3",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -131,12 +131,12 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ],
     "BTTS": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "7279ffbe34b0e6508621ddd96ee9f58f",
       "home_team": "Boca Juniors",
       "away_team": "Independiente Rivadavia",
@@ -150,7 +150,7 @@
       "p_market_fair": "0.453822",
       "odds": "2.0",
       "legacy_tier": "MARKSMAN",
-      "legacy_rank": 3,
+      "legacy_rank": "3",
       "production_state": "ACTIVE",
       "research_regime": "PROTECTED",
       "production_selected": "True",
@@ -158,10 +158,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 2,
+      "league_market_rank": "2",
       "fixture_id": "ae74ca664c7e7b2ba3b1a7ddb2d5f542",
       "home_team": "Velez Sarsfield BA",
       "away_team": "Independiente",
@@ -175,7 +175,7 @@
       "p_market_fair": "0.493908",
       "odds": "1.87",
       "legacy_tier": "AVOID",
-      "legacy_rank": 5,
+      "legacy_rank": "5",
       "production_state": "PAPER",
       "research_regime": "PROTECTED",
       "production_selected": "False",
@@ -183,10 +183,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 3,
+      "league_market_rank": "3",
       "fixture_id": "12d8d17b18ba164a3ed6b61efca82f5e",
       "home_team": "Instituto de C\u00f3rdoba",
       "away_team": "River Plate",
@@ -200,7 +200,7 @@
       "p_market_fair": "0.455713",
       "odds": "2.0",
       "legacy_tier": "AVOID",
-      "legacy_rank": 4,
+      "legacy_rank": "4",
       "production_state": "PAPER",
       "research_regime": "PROTECTED",
       "production_selected": "False",
@@ -208,10 +208,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 4,
+      "league_market_rank": "4",
       "fixture_id": "8799cd4788843ece1b91f71b59c955eb",
       "home_team": "Rosario Central",
       "away_team": "Barracas Central",
@@ -225,7 +225,7 @@
       "p_market_fair": "0.394551",
       "odds": "2.28",
       "legacy_tier": "QUALIFIED",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "PAPER",
       "research_regime": "PROTECTED",
       "production_selected": "False",
@@ -233,10 +233,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 5,
+      "league_market_rank": "5",
       "fixture_id": "3c55be4d38980e11540c96a994695d51",
       "home_team": "Rosario Central",
       "away_team": "Barracas Central",
@@ -250,7 +250,7 @@
       "p_market_fair": "0.398716",
       "odds": "2.26",
       "legacy_tier": "QUALIFIED",
-      "legacy_rank": 2,
+      "legacy_rank": "2",
       "production_state": "PAPER",
       "research_regime": "PROTECTED",
       "production_selected": "False",
@@ -258,12 +258,12 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ],
     "OVER15": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "12d8d17b18ba164a3ed6b61efca82f5e",
       "home_team": "Instituto de C\u00f3rdoba",
       "away_team": "River Plate",
@@ -277,7 +277,7 @@
       "p_market_fair": "0.618706",
       "odds": "1.54",
       "legacy_tier": "QUALIFIED",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -285,10 +285,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 2,
+      "league_market_rank": "2",
       "fixture_id": "7279ffbe34b0e6508621ddd96ee9f58f",
       "home_team": "Boca Juniors",
       "away_team": "Independiente Rivadavia",
@@ -302,7 +302,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 2,
+      "legacy_rank": "2",
       "production_state": "ACTIVE_LOW",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -310,10 +310,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 3,
+      "league_market_rank": "3",
       "fixture_id": "3c55be4d38980e11540c96a994695d51",
       "home_team": "Rosario Central",
       "away_team": "Barracas Central",
@@ -327,7 +327,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 3,
+      "legacy_rank": "3",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -335,10 +335,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 4,
+      "league_market_rank": "4",
       "fixture_id": "ae74ca664c7e7b2ba3b1a7ddb2d5f542",
       "home_team": "Velez Sarsfield BA",
       "away_team": "Independiente",
@@ -352,7 +352,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 4,
+      "legacy_rank": "4",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -360,10 +360,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 5,
+      "league_market_rank": "5",
       "fixture_id": "8799cd4788843ece1b91f71b59c955eb",
       "home_team": "Rosario Central",
       "away_team": "Barracas Central",
@@ -377,7 +377,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 5,
+      "legacy_rank": "5",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -385,12 +385,12 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ],
     "OVER35": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "7279ffbe34b0e6508621ddd96ee9f58f",
       "home_team": "Boca Juniors",
       "away_team": "Independiente Rivadavia",
@@ -404,7 +404,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "BLOCKED",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -412,10 +412,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 2,
+      "league_market_rank": "2",
       "fixture_id": "3c55be4d38980e11540c96a994695d51",
       "home_team": "Rosario Central",
       "away_team": "Barracas Central",
@@ -429,7 +429,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 2,
+      "legacy_rank": "2",
       "production_state": "BLOCKED",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -437,10 +437,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 3,
+      "league_market_rank": "3",
       "fixture_id": "ae74ca664c7e7b2ba3b1a7ddb2d5f542",
       "home_team": "Velez Sarsfield BA",
       "away_team": "Independiente",
@@ -454,7 +454,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 3,
+      "legacy_rank": "3",
       "production_state": "BLOCKED",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -462,10 +462,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 4,
+      "league_market_rank": "4",
       "fixture_id": "12d8d17b18ba164a3ed6b61efca82f5e",
       "home_team": "Instituto de C\u00f3rdoba",
       "away_team": "River Plate",
@@ -479,7 +479,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 4,
+      "legacy_rank": "4",
       "production_state": "BLOCKED",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -487,10 +487,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 5,
+      "league_market_rank": "5",
       "fixture_id": "8799cd4788843ece1b91f71b59c955eb",
       "home_team": "Rosario Central",
       "away_team": "Barracas Central",
@@ -504,7 +504,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 5,
+      "legacy_rank": "5",
       "production_state": "BLOCKED",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -512,7 +512,7 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ]
    },
@@ -6094,7 +6094,7 @@
    "top5": {
     "OU25": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "6a6e4753173f8db212cb4b448a892c6f",
       "home_team": "Le\u00f3n",
       "away_team": "Cruz Azul",
@@ -6108,7 +6108,7 @@
       "p_market_fair": "0.584594",
       "odds": "1.61",
       "legacy_tier": "AVOID",
-      "legacy_rank": 5,
+      "legacy_rank": "5",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6116,10 +6116,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 2,
+      "league_market_rank": "2",
       "fixture_id": "a648e84f07617a98535305954fc21467",
       "home_team": "Pachuca",
       "away_team": "Guadalajara",
@@ -6133,7 +6133,7 @@
       "p_market_fair": "0.571975",
       "odds": "1.64",
       "legacy_tier": "AVOID",
-      "legacy_rank": 3,
+      "legacy_rank": "3",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6141,10 +6141,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 3,
+      "league_market_rank": "3",
       "fixture_id": "a12dfb65a14c07d6d92c68a4843e358d",
       "home_team": "Cruz Azul",
       "away_team": "Le\u00f3n",
@@ -6158,7 +6158,7 @@
       "p_market_fair": "0.596212",
       "odds": "1.6",
       "legacy_tier": "AVOID",
-      "legacy_rank": 2,
+      "legacy_rank": "2",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6166,10 +6166,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 4,
+      "league_market_rank": "4",
       "fixture_id": "200e4a0ac803d6e2b62e56245eb81336",
       "home_team": "Toluca",
       "away_team": "Atlas",
@@ -6183,7 +6183,7 @@
       "p_market_fair": "0.708326",
       "odds": "1.36",
       "legacy_tier": "AVOID",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6191,10 +6191,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 5,
+      "league_market_rank": "5",
       "fixture_id": "62616fc8a07a92e905749968501d260d",
       "home_team": "Monterrey",
       "away_team": "Am\u00e9rica",
@@ -6208,7 +6208,7 @@
       "p_market_fair": "0.598525",
       "odds": "1.53",
       "legacy_tier": "AVOID",
-      "legacy_rank": 4,
+      "legacy_rank": "4",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6216,12 +6216,12 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ],
     "BTTS": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "200e4a0ac803d6e2b62e56245eb81336",
       "home_team": "Toluca",
       "away_team": "Atlas",
@@ -6235,7 +6235,7 @@
       "p_market_fair": "0.601447",
       "odds": "1.555",
       "legacy_tier": "AVOID",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6243,10 +6243,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 2,
+      "league_market_rank": "2",
       "fixture_id": "62616fc8a07a92e905749968501d260d",
       "home_team": "Monterrey",
       "away_team": "Am\u00e9rica",
@@ -6260,7 +6260,7 @@
       "p_market_fair": "0.634886",
       "odds": "1.5",
       "legacy_tier": "AVOID",
-      "legacy_rank": 2,
+      "legacy_rank": "2",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6268,10 +6268,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 3,
+      "league_market_rank": "3",
       "fixture_id": "6a6e4753173f8db212cb4b448a892c6f",
       "home_team": "Le\u00f3n",
       "away_team": "Cruz Azul",
@@ -6285,7 +6285,7 @@
       "p_market_fair": "0.618913",
       "odds": "1.515",
       "legacy_tier": "AVOID",
-      "legacy_rank": 3,
+      "legacy_rank": "3",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6293,10 +6293,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 4,
+      "league_market_rank": "4",
       "fixture_id": "a648e84f07617a98535305954fc21467",
       "home_team": "Pachuca",
       "away_team": "Guadalajara",
@@ -6310,7 +6310,7 @@
       "p_market_fair": "0.624359",
       "odds": "1.5",
       "legacy_tier": "AVOID",
-      "legacy_rank": 4,
+      "legacy_rank": "4",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6318,10 +6318,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 5,
+      "league_market_rank": "5",
       "fixture_id": "a12dfb65a14c07d6d92c68a4843e358d",
       "home_team": "Cruz Azul",
       "away_team": "Le\u00f3n",
@@ -6335,7 +6335,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 5,
+      "legacy_rank": "5",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6343,12 +6343,12 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ],
     "OVER15": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "200e4a0ac803d6e2b62e56245eb81336",
       "home_team": "Toluca",
       "away_team": "Atlas",
@@ -6362,7 +6362,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6370,10 +6370,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 2,
+      "league_market_rank": "2",
       "fixture_id": "62616fc8a07a92e905749968501d260d",
       "home_team": "Monterrey",
       "away_team": "Am\u00e9rica",
@@ -6387,7 +6387,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 2,
+      "legacy_rank": "2",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6395,10 +6395,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 3,
+      "league_market_rank": "3",
       "fixture_id": "a648e84f07617a98535305954fc21467",
       "home_team": "Pachuca",
       "away_team": "Guadalajara",
@@ -6412,7 +6412,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 3,
+      "legacy_rank": "3",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6420,10 +6420,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 4,
+      "league_market_rank": "4",
       "fixture_id": "6a6e4753173f8db212cb4b448a892c6f",
       "home_team": "Le\u00f3n",
       "away_team": "Cruz Azul",
@@ -6437,7 +6437,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 4,
+      "legacy_rank": "4",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6445,10 +6445,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 5,
+      "league_market_rank": "5",
       "fixture_id": "a12dfb65a14c07d6d92c68a4843e358d",
       "home_team": "Cruz Azul",
       "away_team": "Le\u00f3n",
@@ -6462,7 +6462,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 5,
+      "legacy_rank": "5",
       "production_state": "PAPER",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6470,12 +6470,12 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ],
     "OVER35": [
      {
-      "league_market_rank": 1,
+      "league_market_rank": "1",
       "fixture_id": "200e4a0ac803d6e2b62e56245eb81336",
       "home_team": "Toluca",
       "away_team": "Atlas",
@@ -6489,7 +6489,7 @@
       "p_market_fair": "0.448983",
       "odds": "1.81",
       "legacy_tier": "AVOID",
-      "legacy_rank": 1,
+      "legacy_rank": "1",
       "production_state": "BLOCKED",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6497,10 +6497,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 2,
+      "league_market_rank": "2",
       "fixture_id": "62616fc8a07a92e905749968501d260d",
       "home_team": "Monterrey",
       "away_team": "Am\u00e9rica",
@@ -6514,7 +6514,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 2,
+      "legacy_rank": "2",
       "production_state": "BLOCKED",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6522,10 +6522,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 3,
+      "league_market_rank": "3",
       "fixture_id": "a648e84f07617a98535305954fc21467",
       "home_team": "Pachuca",
       "away_team": "Guadalajara",
@@ -6539,7 +6539,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 3,
+      "legacy_rank": "3",
       "production_state": "BLOCKED",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6547,10 +6547,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 4,
+      "league_market_rank": "4",
       "fixture_id": "6a6e4753173f8db212cb4b448a892c6f",
       "home_team": "Le\u00f3n",
       "away_team": "Cruz Azul",
@@ -6564,7 +6564,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 4,
+      "legacy_rank": "4",
       "production_state": "BLOCKED",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6572,10 +6572,10 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      },
      {
-      "league_market_rank": 5,
+      "league_market_rank": "5",
       "fixture_id": "a12dfb65a14c07d6d92c68a4843e358d",
       "home_team": "Cruz Azul",
       "away_team": "Le\u00f3n",
@@ -6589,7 +6589,7 @@
       "p_market_fair": "",
       "odds": "",
       "legacy_tier": "NOT_EVALUATED",
-      "legacy_rank": 5,
+      "legacy_rank": "5",
       "production_state": "BLOCKED",
       "research_regime": "LEARNING",
       "production_selected": "False",
@@ -6597,7 +6597,7 @@
       "result": "",
       "flat_pnl": "",
       "clv_pct": "",
-      "status": "PROVISIONAL"
+      "status": "FROZEN"
      }
     ]
    },

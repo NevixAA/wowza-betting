@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-25T18:42:28Z",
+ "generated_at": "2026-11-26T02:01:32Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
@@ -807,13 +807,31 @@
     "settled": 0,
     "flat_pnl_units": 0.0
    },
-   "latest_league_week_id": "Mexico Liga MX|2026-W47",
+   "latest_league_week_id": "Mexico Liga MX|2026-W48",
    "latest_excluded": {
-    "BELOW_LEAGUE_BAR": 9,
-    "NO_LEAGUE_BAR": 22,
-    "NO_TWO_SIDED_PRICE": 5
+    "EMPTY_SLOT_NO_PICK_ABOVE_FAIR": 2,
+    "NOT_ABOVE_FAIR_PRICE": 9,
+    "NO_TWO_SIDED_PRICE": 10
    },
-   "latest_picks": [],
+   "latest_picks": [
+    {
+     "top3_rank": "1",
+     "home_team": "Monterrey",
+     "away_team": "Am\u00e9rica",
+     "kickoff_utc": "2026-11-26T03:10:00Z",
+     "market": "OU25",
+     "side": "OVER",
+     "odds": "1.53",
+     "edge_calibrated": "",
+     "slot": "T1_BEST_VALUE",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +3.7pp vs fair price, no stake: no approved bar"
+    }
+   ],
    "staked": {
     "picks": 0,
     "settled": 0,
@@ -822,14 +840,14 @@
     "roi": null
    },
    "no_stake": {
-    "picks": 0,
+    "picks": 1,
     "settled": 0,
     "won": 0,
     "flat_pnl_units": 0.0,
     "roi": null
    },
-   "weeks_decided": 1,
-   "picks": 0,
+   "weeks_decided": 2,
+   "picks": 1,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0,
