@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-26T07:48:51Z",
+ "generated_at": "2026-11-26T14:58:32Z",
  "selection_mode": "PROPS_TOP3_LEAGUE_GW",
  "version": "PROPS-TOP3-1",
  "freeze_lead_min": 120.0,
@@ -128,6 +128,52 @@
    "settled": 1,
    "won": 1,
    "flat_pnl_units": 1.88
+  },
+  "Conference League": {
+   "latest_league_week_id": "Conference League|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 21
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "Ibrahim Adel",
+     "team": "FC Nordsjaelland",
+     "match": "FC Nordsjaelland vs Panathinaikos",
+     "kickoff_utc": "2026-11-26T20:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T2_SAFEST",
+     "player_name": "A. Youssef",
+     "team": "Mjallby AIF",
+     "match": "Kairat Almaty vs Mjallby AIF",
+     "kickoff_utc": "2026-11-26T15:30:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T3_RISKY_VALUE",
+     "player_name": "\u0218tefan Baiaram",
+     "team": "Universitatea Craiova",
+     "match": "Brighton vs Universitatea Craiova",
+     "kickoff_utc": "2026-11-26T17:45:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 3,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
   },
   "Denmark Superliga": {
    "latest_league_week_id": "Denmark Superliga|2026-W48",
@@ -304,7 +350,7 @@
      "market": "sot2",
      "value_basis": "vs quoted price",
      "stake_label": "No stake: props not proven yet",
-     "result": ""
+     "result": "LOSS"
     },
     {
      "role": "T2_SAFEST",
@@ -315,7 +361,7 @@
      "market": "sot",
      "value_basis": "vs quoted price",
      "stake_label": "No stake: props not proven yet",
-     "result": ""
+     "result": "LOSS"
     },
     {
      "role": "T3_RISKY_VALUE",
@@ -326,14 +372,14 @@
      "market": "sot2",
      "value_basis": "vs quoted price",
      "stake_label": "No stake: props not proven yet",
-     "result": ""
+     "result": "LOSS"
     }
    ],
    "weeks_decided": 1,
    "picks": 3,
-   "settled": 0,
+   "settled": 3,
    "won": 0,
-   "flat_pnl_units": 0.0
+   "flat_pnl_units": -3.0
   },
   "Premier League": {
    "latest_league_week_id": "Premier League|2026-W48",
