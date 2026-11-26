@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-26T02:01:32Z",
+ "generated_at": "2026-11-26T02:27:30Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
@@ -915,7 +915,7 @@
      "edge_calibrated": "",
      "slot": "T1_BEST_VALUE",
      "cell_status": "",
-     "result": "",
+     "result": "LOSS",
      "stake": "0.0",
      "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
      "value_basis": "MODEL_EDGE",
@@ -932,7 +932,7 @@
      "edge_calibrated": "0.009835",
      "slot": "T2_SAFEST",
      "cell_status": "PROMISING",
-     "result": "",
+     "result": "WIN",
      "stake": "0.0",
      "stake_reason": "NO_STAKE_BELOW_BAR",
      "value_basis": "CALIBRATED",
@@ -965,17 +965,17 @@
    },
    "no_stake": {
     "picks": 3,
-    "settled": 0,
-    "won": 0,
-    "flat_pnl_units": 0.0,
-    "roi": null
+    "settled": 2,
+    "won": 1,
+    "flat_pnl_units": -0.32,
+    "roi": -0.16
    },
    "weeks_decided": 2,
    "picks": 3,
-   "settled": 0,
-   "won": 0,
-   "flat_pnl_units": 0.0,
-   "roi": null
+   "settled": 2,
+   "won": 1,
+   "flat_pnl_units": -0.32,
+   "roi": -0.16
   },
   "Sweden Allsvenskan": {
    "league_rule": {
