@@ -1,21 +1,21 @@
 {
-  "checked_at": "2026-11-25T13:38:06Z",
-  "run_number": "100",
+  "checked_at": "2026-11-26T13:16:04Z",
+  "run_number": "101",
   "gate": {
     "collect": "true",
     "newest_before": "2026-11-23",
-    "age_days": "2",
-    "hours_since_commit": "23.0"
+    "age_days": "3",
+    "hours_since_commit": "23.5"
   },
   "collect_outcome": "success",
-  "last_collect_at": "2026-11-25T13:38:06Z",
+  "last_collect_at": "2026-11-26T13:16:04Z",
   "parquet": {
     "rows": 893422,
     "newest_after": "2026-11-23"
   },
   "collect_log_tail": [
     "  [USA MLS 2026] Fetching fixture list (last 99)...",
-    "  [USA MLS 2026] 99 fixtures (98 cached, 1 to fetch)...",
+    "  [USA MLS 2026] 99 fixtures (99 cached, 0 to fetch)...",
     "  [USA MLS 2026] 2821 player-match rows collected; 8 row(s) without an API-Football player id dropped",
     "  [Premier League 2026] Fetching fixture list (last 99)...",
     "  [Premier League 2026] 99 fixtures (99 cached, 0 to fetch)...",
@@ -32,16 +32,16 @@
     "  [Ligue 1 2026] Fetching fixture list (last 99)...",
     "  [Ligue 1 2026] 99 fixtures (99 cached, 0 to fetch)...",
     "  [Ligue 1 2026] 2879 player-match rows collected; 15 row(s) without an API-Football player id dropped",
-    "[DONE] 69074 total player-match rows across 25 leagues / 25 season-slots.",
-    "  [sp_events] 2,393 fixtures (29 need API calls)...",
-    "  [sp_events] set-piece split known for 207 of 2,393 fixture(s); the rest stay NaN",
+    "[DONE] 69054 total player-match rows across 25 leagues / 25 season-slots.",
+    "  [sp_events] 2,393 fixtures (12 need API calls)...",
+    "  [sp_events] set-piece split known for 208 of 2,393 fixture(s); the rest stay NaN",
     "  [sp_events] 0 SP goals (0 headers) | 0 SP assist rows matched",
-    "[collect] referee: 31193 row(s) given the canonical spelling",
+    "[collect] referee: 31361 row(s) given the canonical spelling",
     "[features] 330 row(s) without a real player_id dropped",
     "[setpiece] no mapped Understat data in /home/runner/work/wowza-betting/wowza-betting/output/collect: set-piece features are NaN",
     "[features] 67 player row(s) without a team or in a competition the registry does not know (['Brazil Serie A']) feed no opponent table",
-    "[features] season unknown for 7,846 row(s) (['AFC Champions League Elite', 'Africa Cup of Nations', 'CONCACAF Champions League', 'CONMEBOL Libertadores', 'CONMEBOL Sudamericana', 'FIFA Club World Cup']): season_* stay NaN",
-    "[features] 21,571 first-appearance row(s) dropped (no prior match)",
+    "[features] season unknown for 7,850 row(s) (['AFC Champions League Elite', 'Africa Cup of Nations', 'CONCACAF Champions League', 'CONMEBOL Libertadores', 'CONMEBOL Sudamericana', 'FIFA Club World Cup']): season_* stay NaN",
+    "[features] 21,572 first-appearance row(s) dropped (no prior match)",
     "[collect] merge with existing FAILED (Invalid value '[35.74811773 25.65366188 25.27036277 ... 24.14784394 24.78576318",
     " 25.78507871]' for dtype 'float32') \u2014 refusing to overwrite player_history.parquet with a partial collect"
   ]
