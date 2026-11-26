@@ -1,11 +1,11 @@
 {
  "artifact": "prediction_gw_dataset",
  "clean_record_start_utc": "2026-11-19T06:41:48Z",
- "closed_rows": 6846,
+ "closed_rows": 6903,
  "fixture_identity": {
   "af_id_conflicts": 0,
-  "canonical_fixtures_after": 652,
-  "fixture_refs": 983,
+  "canonical_fixtures_after": 668,
+  "fixture_refs": 1000,
   "identity_version": "fid/1.0",
   "kickoff_conflicts_unresolved": 0,
   "kickoff_drift_groups": 47,
@@ -13,17 +13,17 @@
    "accent": 43,
    "kickoff_drift": 47,
    "name_variant": 191,
-   "ref_only": 89
+   "ref_only": 90
   },
   "matches_split_before": 237,
-  "page_keys_before": 889
+  "page_keys_before": 905
  },
  "gameweek_rule": "GW-1: src/gameweek.league_week_id on the tip day (src/tip_day, rollover 10:00 Asia/Jerusalem) - the TOP-3 gameweek (src/top3_league.py)",
  "gws": [
   "2026-W47",
   "2026-W48"
  ],
- "link_rows": 462649,
+ "link_rows": 465095,
  "price_basis": {
   "pro:pro_bb_combo": "no market price: hit rate only"
  },
@@ -32,13 +32,13 @@
   "pro",
   "v9"
  ],
- "rows": 8955,
+ "rows": 9571,
  "schema_version": "pgw/1.0",
  "sources_sha256": {
-  "pro:prediction_ledger": "1234dad6081c932c7bf1a14720b2ae2c357fb7df51d216b74dfa6dac4d47f754",
-  "pro:prediction_ledger_settled": "36b98be0aaba69a43c5a08330734ac8bdbad01602e2e05dd6cd1495995336b28",
-  "v9:prediction_ledger": "6ff1533ddc736824cc82153291b3467ec673348ffff9f8d642984d65af7fef0a",
-  "v9:prediction_ledger_settled": "69300e9d3d92a4cf25f16929afbb0f8fdec7895b62a36328b39894f9b7e7209b"
+  "pro:prediction_ledger": "f314eb4bdee0eb358043fd0426df7703d2e95edc230a6618b3a48295ef6e8575",
+  "pro:prediction_ledger_settled": "a8a83afbb5c50efd49cc2f87751b33b330f80a0fb4e6104a89b941c27b0ac332",
+  "v9:prediction_ledger": "fae41ad1329b6bb0177b3c0f1582de5697c5fc01666f031a8e4733f4f7094358",
+  "v9:prediction_ledger_settled": "4f5fdf9b4955f9e149eba9435766597d99aa5300d531311cd6ee542ccee7c426"
  },
  "unassigned_questions": 0
 }
