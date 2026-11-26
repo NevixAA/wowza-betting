@@ -170,13 +170,13 @@
     },
     "E1_2627.csv": {
       "code": "E1",
-      "fetched_at": "2026-11-24T03:23:53Z",
+      "fetched_at": "2026-11-26T15:27:01Z",
       "has_entry_ou25": true,
-      "last_match": "2026-11-22",
+      "last_match": "2026-11-25",
       "league": "Championship",
-      "rows": 192,
+      "rows": 204,
       "season": "2627",
-      "sha256": "1d3ffc5e2e07304f0f7c976bd5d322694c1dc23d69d73be2c8bdd47e8b5c969b",
+      "sha256": "8abf1159a002feb6adfd08137056299e01eb428038901e2db191758843b1281c",
       "url": "https://www.football-data.co.uk/mmz4281/2627/E1.csv",
       "valid": true
     },
@@ -230,13 +230,13 @@
     },
     "E2_2627.csv": {
       "code": "E2",
-      "fetched_at": "2026-11-24T03:23:53Z",
+      "fetched_at": "2026-11-26T15:27:01Z",
       "has_entry_ou25": true,
-      "last_match": "2026-11-21",
+      "last_match": "2026-11-24",
       "league": "League One",
-      "rows": 175,
+      "rows": 179,
       "season": "2627",
-      "sha256": "d34b27c8bfdb74c2478ebc0a72635744d9880f1bb846f3fa6ef39195edda0507",
+      "sha256": "4d62d74ed59f5d821ff5cfb12ccb067b4f72b1d5b3e9c2f120a8d517d1812252",
       "url": "https://www.football-data.co.uk/mmz4281/2627/E2.csv",
       "valid": true
     },
@@ -290,13 +290,13 @@
     },
     "E3_2627.csv": {
       "code": "E3",
-      "fetched_at": "2026-11-24T03:23:53Z",
+      "fetched_at": "2026-11-26T15:27:01Z",
       "has_entry_ou25": true,
-      "last_match": "2026-11-21",
+      "last_match": "2026-11-24",
       "league": "League Two",
-      "rows": 186,
+      "rows": 188,
       "season": "2627",
-      "sha256": "44ee3287fb73084703e72754b58d0b69cc8f028c95b82d0adcf906be71d3e69e",
+      "sha256": "57315f6f9111bace2417bb5c6a971570e304231d75e2ab58bc486e61117ab572",
       "url": "https://www.football-data.co.uk/mmz4281/2627/E3.csv",
       "valid": true
     },
@@ -350,13 +350,13 @@
     },
     "EC_2627.csv": {
       "code": "EC",
-      "fetched_at": "2026-11-24T03:23:53Z",
+      "fetched_at": "2026-11-26T15:27:01Z",
       "has_entry_ou25": true,
-      "last_match": "2026-11-21",
+      "last_match": "2026-11-25",
       "league": "National League",
-      "rows": 212,
+      "rows": 224,
       "season": "2627",
-      "sha256": "125987e5345531069c8032a72e8e49d38b8a8539958c0b3d0e74061a76a9c4f9",
+      "sha256": "9431309c4e0f5bfca48e997584b16ea69ba2b57667f332ac5fbef9126dcf8782",
       "url": "https://www.football-data.co.uk/mmz4281/2627/EC.csv",
       "valid": true
     },
@@ -530,13 +530,13 @@
     },
     "I2_2627.csv": {
       "code": "I2",
-      "fetched_at": "2026-11-24T03:23:53Z",
+      "fetched_at": "2026-11-26T15:27:01Z",
       "has_entry_ou25": true,
-      "last_match": "2026-11-22",
+      "last_match": "2026-11-25",
       "league": "Serie B",
-      "rows": 120,
+      "rows": 130,
       "season": "2627",
-      "sha256": "b81938337348245c5d5ee2b09f5a75c611b13dbeffd968821e237d2cd777f4fa",
+      "sha256": "df14306690e25a1198ce096a375c9cd428786dd0b817ee2771e148079d1d928d",
       "url": "https://www.football-data.co.uk/mmz4281/2627/I2.csv",
       "valid": true
     },
@@ -710,13 +710,13 @@
     },
     "SC0_2627.csv": {
       "code": "SC0",
-      "fetched_at": "2026-11-24T03:23:53Z",
+      "fetched_at": "2026-11-26T15:27:01Z",
       "has_entry_ou25": true,
-      "last_match": "2026-11-21",
+      "last_match": "2026-11-24",
       "league": "Scottish Premiership",
-      "rows": 81,
+      "rows": 83,
       "season": "2627",
-      "sha256": "f25eedf24cd9907da00f41ec1d4e767eb55229d531c7ae246aaf30ec7f1328ef",
+      "sha256": "73b8c26d1dc8e3e0c6aac925e6ec381610a6b87aa75189287d0d8729e6e84180",
       "url": "https://www.football-data.co.uk/mmz4281/2627/SC0.csv",
       "valid": true
     },
@@ -1024,9 +1024,9 @@
   "last_run": {
     "failed": 0,
     "not_published": 0,
-    "unchanged": 85,
-    "written": 0
+    "unchanged": 79,
+    "written": 6
   },
   "source": "football-data.co.uk (free CSV files; the loader downloads the same files in CI)",
-  "updated_at": "2026-11-26T01:03:40Z"
+  "updated_at": "2026-11-26T15:27:01Z"
 }
