@@ -1,17 +1,17 @@
 {
  "identity_version": "fid/1.0",
- "fixture_refs": 1000,
- "page_keys_before": 905,
- "canonical_fixtures_after": 668,
- "matches_split_before": 237,
+ "fixture_refs": 1004,
+ "page_keys_before": 909,
+ "canonical_fixtures_after": 671,
+ "matches_split_before": 238,
  "kinds": {
   "accent": 43,
-  "name_variant": 191,
-  "kickoff_drift": 47,
+  "name_variant": 192,
+  "kickoff_drift": 48,
   "ref_only": 90
  },
  "kickoff_conflicts_unresolved": 0,
- "kickoff_drift_groups": 47,
+ "kickoff_drift_groups": 48,
  "af_id_conflicts": 0,
  "per_league": {
   "Argentina Primera Division": {
@@ -93,10 +93,10 @@
   },
   "Mexico Liga MX": {
    "accent": 3,
-   "name_variant": 7,
-   "kickoff_drift": 5,
+   "name_variant": 8,
+   "kickoff_drift": 6,
    "ref_only": 0,
-   "matches_split": 11
+   "matches_split": 12
   },
   "Norway Eliteserien": {
    "accent": 4,
@@ -655,6 +655,18 @@
    "sources": {
     "af:1651505": "2026-11-25T21:00:00Z",
     "oa:200e4a0ac803d6e2b62e56245eb81336": "2026-11-26T01:00:00Z"
+   }
+  },
+  {
+   "canonical_fixture_ref": "af:1651507",
+   "league": "Mexico Liga MX",
+   "match": "Club America v Monterrey",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-28T21:00:00Z",
+   "drift_min": 370.0,
+   "sources": {
+    "af:1651507": "2026-11-28T21:00:00Z",
+    "oa:3f1a108d2920eabe5fe9bfc2531db019": "2026-11-29T03:10:00Z"
    }
   },
   {
