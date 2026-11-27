@@ -1,25 +1,25 @@
 {
  "identity_version": "fid/1.0",
- "fixture_refs": 1004,
- "page_keys_before": 909,
- "canonical_fixtures_after": 671,
- "matches_split_before": 238,
+ "fixture_refs": 1019,
+ "page_keys_before": 921,
+ "canonical_fixtures_after": 672,
+ "matches_split_before": 248,
  "kinds": {
   "accent": 43,
-  "name_variant": 192,
-  "kickoff_drift": 48,
-  "ref_only": 90
+  "name_variant": 201,
+  "kickoff_drift": 49,
+  "ref_only": 93
  },
  "kickoff_conflicts_unresolved": 0,
- "kickoff_drift_groups": 48,
+ "kickoff_drift_groups": 49,
  "af_id_conflicts": 0,
  "per_league": {
   "Argentina Primera Division": {
    "accent": 1,
-   "name_variant": 7,
+   "name_variant": 8,
    "kickoff_drift": 9,
    "ref_only": 0,
-   "matches_split": 10
+   "matches_split": 11
   },
   "Austrian Bundesliga": {
    "accent": 0,
@@ -79,10 +79,10 @@
   },
   "League Two": {
    "accent": 0,
-   "name_variant": 18,
+   "name_variant": 26,
    "kickoff_drift": 0,
-   "ref_only": 8,
-   "matches_split": 18
+   "ref_only": 11,
+   "matches_split": 26
   },
   "Ligue 2": {
    "accent": 0,
@@ -94,9 +94,9 @@
   "Mexico Liga MX": {
    "accent": 3,
    "name_variant": 8,
-   "kickoff_drift": 6,
+   "kickoff_drift": 7,
    "ref_only": 0,
-   "matches_split": 12
+   "matches_split": 13
   },
   "Norway Eliteserien": {
    "accent": 4,
@@ -658,6 +658,18 @@
    }
   },
   {
+   "canonical_fixture_ref": "af:1651506",
+   "league": "Mexico Liga MX",
+   "match": "Atlas v Toluca",
+   "kickoff_source": "api-football",
+   "canonical_kickoff_utc": "2026-11-28T21:00:00Z",
+   "drift_min": 240.0,
+   "sources": {
+    "af:1651506": "2026-11-28T21:00:00Z",
+    "oa:3ce1103c7e9a4473c71666be5276588c": "2026-11-29T01:00:00Z"
+   }
+  },
+  {
    "canonical_fixture_ref": "af:1651507",
    "league": "Mexico Liga MX",
    "match": "Club America v Monterrey",
@@ -703,6 +715,7 @@
    "drift_min": 1800.0,
    "sources": {
     "af:1651632": "2026-11-29T21:00:00Z",
+    "nk:argentina_primera_division|2026-11-29|Velez Sarsfield BA|Independiente": "2026-11-29T00:00:00Z",
     "oa:ae74ca664c7e7b2ba3b1a7ddb2d5f542": "2026-11-28T15:00:00Z"
    }
   }
