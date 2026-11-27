@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-27T14:55:14Z",
+ "generated_at": "2026-11-27T18:09:07Z",
  "selection_mode": "PROPS_TOP3_LEAGUE_GW",
  "version": "PROPS-TOP3-1",
  "freeze_lead_min": 120.0,
@@ -18,6 +18,52 @@
    "won": 0,
    "flat_pnl_units": 0.0
   },
+  "Austrian Bundesliga": {
+   "latest_league_week_id": "Austrian Bundesliga|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 14
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "D. Weixelbraun",
+     "team": "Austria Lustenau",
+     "match": "Austria Lustenau vs Rapid Vienna",
+     "kickoff_utc": "2026-11-28T18:30:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T2_SAFEST",
+     "player_name": "H. Tabakovi\u0107",
+     "team": "Red Bull Salzburg",
+     "match": "Red Bull Salzburg vs Lask Linz",
+     "kickoff_utc": "2026-11-29T16:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T3_RISKY_VALUE",
+     "player_name": "J. Eggestein",
+     "team": "Austria Vienna",
+     "match": "Austria Vienna vs Wolfsberger AC",
+     "kickoff_utc": "2026-11-28T16:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 3,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
   "Brazil Serie A": {
    "latest_league_week_id": "Brazil Serie A|2026-W48",
    "latest_excluded": {
@@ -28,6 +74,102 @@
    "latest_picks": [],
    "weeks_decided": 1,
    "picks": 0,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Bundesliga": {
+   "latest_league_week_id": "Bundesliga|2026-W48",
+   "latest_excluded": {
+    "FIRST_SEEN_AFTER_FREEZE": 3,
+    "NO_POSITIVE_VALUE": 190,
+    "RANKED_BELOW_TOP3": 10
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "I. Matanovi\u0107",
+     "team": "SC Freiburg",
+     "match": "SC Freiburg vs RB Leipzig",
+     "kickoff_utc": "2026-11-29T14:30:00Z",
+     "market": "sot2",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T2_SAFEST",
+     "player_name": "M. Olise",
+     "team": "Bayern M\u00fcnchen",
+     "match": "Hamburger SV vs Bayern M\u00fcnchen",
+     "kickoff_utc": "2026-11-28T14:30:00Z",
+     "market": "sot2",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T3_RISKY_VALUE",
+     "player_name": "B. Sosa",
+     "team": "1. FC K\u00f6ln",
+     "match": "1. FC K\u00f6ln vs SV Elversberg",
+     "kickoff_utc": "2026-11-28T14:30:00Z",
+     "market": "cards",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 3,
+   "settled": 0,
+   "won": 0,
+   "flat_pnl_units": 0.0
+  },
+  "Bundesliga 2": {
+   "latest_league_week_id": "Bundesliga 2|2026-W48",
+   "latest_excluded": {
+    "NO_POSITIVE_VALUE": 25,
+    "RANKED_BELOW_TOP3": 3,
+    "STARTED_BEFORE_ISSUE": 2
+   },
+   "latest_picks": [
+    {
+     "role": "T1_BEST_VALUE",
+     "player_name": "F. Reese",
+     "team": "VfL Wolfsburg",
+     "match": "Eintracht Braunschweig vs VfL Wolfsburg",
+     "kickoff_utc": "2026-11-29T12:30:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T2_SAFEST",
+     "player_name": "J. Grodowski",
+     "team": "Arminia Bielefeld",
+     "match": "SpVgg Greuther F\u00fcrth vs Arminia Bielefeld",
+     "kickoff_utc": "2026-11-29T12:30:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    },
+    {
+     "role": "T3_RISKY_VALUE",
+     "player_name": "M. Wanitzek",
+     "team": "Karlsruher SC",
+     "match": "Hertha BSC vs Karlsruher SC",
+     "kickoff_utc": "2026-11-28T12:00:00Z",
+     "market": "goals",
+     "value_basis": "vs quoted price",
+     "stake_label": "No stake: props not proven yet",
+     "result": ""
+    }
+   ],
+   "weeks_decided": 1,
+   "picks": 3,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0
