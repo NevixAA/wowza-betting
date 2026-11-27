@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-27T17:39:37Z",
+ "generated_at": "2026-11-27T18:09:58Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
@@ -100,13 +100,65 @@
     "settled": 0,
     "flat_pnl_units": 0.0
    },
-   "latest_league_week_id": "Austrian Bundesliga|2026-W47",
+   "latest_league_week_id": "Austrian Bundesliga|2026-W48",
    "latest_excluded": {
-    "BELOW_LEAGUE_BAR": 6,
-    "NO_LEAGUE_BAR": 16,
-    "NO_TWO_SIDED_PRICE": 2
+    "NOT_ABOVE_FAIR_PRICE": 18,
+    "NO_TWO_SIDED_PRICE": 2,
+    "RANKED_BELOW_TOP3": 1
    },
-   "latest_picks": [],
+   "latest_picks": [
+    {
+     "top3_rank": "1",
+     "home_team": "Grazer AK",
+     "away_team": "Rheindorf Altach",
+     "kickoff_utc": "2026-11-27T18:30:00Z",
+     "market": "OU25",
+     "side": "OVER",
+     "odds": "1.82",
+     "edge_calibrated": "",
+     "slot": "T1_BEST_VALUE",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +2.5pp vs fair price, no stake: no approved bar"
+    },
+    {
+     "top3_rank": "2",
+     "home_team": "Grazer AK",
+     "away_team": "Rheindorf Altach",
+     "kickoff_utc": "2026-11-27T18:30:00Z",
+     "market": "OVER15",
+     "side": "OVER",
+     "odds": "1.24",
+     "edge_calibrated": "",
+     "slot": "T2_SAFEST",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +0.6pp vs fair price, no stake: no approved bar"
+    },
+    {
+     "top3_rank": "3",
+     "home_team": "Austria Wien",
+     "away_team": "Wolfsberger AC",
+     "kickoff_utc": "2026-11-28T16:00:00Z",
+     "market": "OU25",
+     "side": "OVER",
+     "odds": "1.66",
+     "edge_calibrated": "",
+     "slot": "T3_RISKY_VALUE",
+     "cell_status": "",
+     "result": "",
+     "stake": "0.0",
+     "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
+     "value_basis": "MODEL_EDGE",
+     "stake_label": "model +0.3pp vs fair price, no stake: no approved bar"
+    }
+   ],
    "staked": {
     "picks": 0,
     "settled": 0,
@@ -115,14 +167,14 @@
     "roi": null
    },
    "no_stake": {
-    "picks": 0,
+    "picks": 3,
     "settled": 0,
     "won": 0,
     "flat_pnl_units": 0.0,
     "roi": null
    },
-   "weeks_decided": 1,
-   "picks": 0,
+   "weeks_decided": 2,
+   "picks": 3,
    "settled": 0,
    "won": 0,
    "flat_pnl_units": 0.0,
@@ -222,10 +274,12 @@
     "settled": 0,
     "flat_pnl_units": 0.0
    },
-   "latest_league_week_id": "Bundesliga 2|2026-W47",
+   "latest_league_week_id": "Bundesliga 2|2026-W48",
    "latest_excluded": {
-    "NO_LEAGUE_BAR": 34,
-    "NO_TWO_SIDED_PRICE": 2
+    "EMPTY_SLOT_NO_PICK_ABOVE_FAIR": 3,
+    "NOT_ABOVE_FAIR_PRICE": 25,
+    "NO_TWO_SIDED_PRICE": 10,
+    "STARTED_BEFORE_ISSUE": 1
    },
    "latest_picks": [],
    "staked": {
@@ -242,7 +296,7 @@
     "flat_pnl_units": 0.0,
     "roi": null
    },
-   "weeks_decided": 1,
+   "weeks_decided": 2,
    "picks": 0,
    "settled": 0,
    "won": 0,

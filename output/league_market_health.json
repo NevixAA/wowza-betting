@@ -1,12 +1,10 @@
 {
- "generated_at": "2026-11-27T17:39:25Z",
+ "generated_at": "2026-11-27T18:09:50Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-27",
  "leagues_with_current_week_data": 16,
- "missing_leagues": [
-  "Bundesliga 2"
- ],
+ "missing_leagues": [],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -18,9 +16,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 724,
  "actual_candidate_rows": 716,
- "panel_rows": 1464,
+ "panel_rows": 1484,
  "settled_rows": 1317,
- "pending_rows": 147,
+ "pending_rows": 167,
  "clv_certified_rows": 634,
  "clv_coverage": 0.4814,
  "protected_tracks_modified": false,
@@ -214,7 +212,7 @@
   "Bundesliga 2": {
    "current": {
     "league_week_id": "Bundesliga 2|2026-W48",
-    "state": "LOCKED_NOT_FROZEN",
+    "state": "FROZEN",
     "fixtures_known": 9,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 9,
@@ -225,19 +223,19 @@
     "markets": {
      "OU25": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 36,
