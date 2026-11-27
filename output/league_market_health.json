@@ -1,10 +1,12 @@
 {
- "generated_at": "2026-11-27T08:13:16Z",
+ "generated_at": "2026-11-27T17:39:25Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-27",
  "leagues_with_current_week_data": 16,
- "missing_leagues": [],
+ "missing_leagues": [
+  "Bundesliga 2"
+ ],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -17,10 +19,10 @@
  "expected_candidate_rows": 724,
  "actual_candidate_rows": 716,
  "panel_rows": 1464,
- "settled_rows": 1308,
- "pending_rows": 156,
- "clv_certified_rows": 629,
- "clv_coverage": 0.4809,
+ "settled_rows": 1317,
+ "pending_rows": 147,
+ "clv_certified_rows": 634,
+ "clv_coverage": 0.4814,
  "protected_tracks_modified": false,
  "leagues": {
   "Argentina Primera Division": {
@@ -212,7 +214,7 @@
   "Bundesliga 2": {
    "current": {
     "league_week_id": "Bundesliga 2|2026-W48",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 9,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 9,
