@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-28T01:29:11Z",
+ "generated_at": "2026-11-28T02:10:25Z",
  "panel_version": "LWR-1",
  "selection_mode": "WEEKLY_LEAGUE_RESEARCH",
  "note": "Research panel, not bets. FROZEN rows were fixed at the week lock (first kickoff of the league-week) from first-sight scores; PROVISIONAL rows may still change until the lock.",
@@ -822,9 +822,9 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
-      "flat_pnl": "",
-      "clv_pct": "",
+      "result": "WIN",
+      "flat_pnl": "0.635",
+      "clv_pct": "-6.571",
       "status": "FROZEN"
      }
     ],
@@ -1076,7 +1076,7 @@
       "research_regime": "LEARNING",
       "production_selected": "False",
       "actually_bet": "False",
-      "result": "",
+      "result": "WIN",
       "flat_pnl": "",
       "clv_pct": "",
       "status": "FROZEN"
@@ -1932,20 +1932,20 @@
      "status": "NOT_ENOUGH_DATA"
     },
     "OU25": {
-     "gameweeks": 4,
+     "gameweeks": 5,
      "rank1_n_priced_settled": 4,
      "rank1_roi": 0.6,
-     "top3_n_priced_settled": 12,
-     "top3_roi": 0.1917,
-     "top5_n_priced_settled": 18,
-     "top5_roi": 0.0294,
-     "top5_clv_mean": -4.067,
-     "top5_clv_coverage": 0.6667,
-     "top5_dlogloss_model_minus_market": -0.01099,
+     "top3_n_priced_settled": 13,
+     "top3_roi": 0.2085,
+     "top5_n_priced_settled": 20,
+     "top5_roi": -0.003,
+     "top5_clv_mean": -3.914,
+     "top5_clv_coverage": 0.65,
+     "top5_dlogloss_model_minus_market": -0.01848,
      "status": "NOT_ENOUGH_DATA"
     },
     "OVER15": {
-     "gameweeks": 4,
+     "gameweeks": 5,
      "rank1_n_priced_settled": 1,
      "rank1_roi": 0.2,
      "top3_n_priced_settled": 2,
@@ -1958,16 +1958,16 @@
      "status": "NOT_ENOUGH_DATA"
     },
     "OVER35": {
-     "gameweeks": 4,
-     "rank1_n_priced_settled": 4,
-     "rank1_roi": -1.0,
-     "top3_n_priced_settled": 12,
-     "top3_roi": -0.6692,
-     "top5_n_priced_settled": 18,
-     "top5_roi": -0.6533,
-     "top5_clv_mean": -6.062,
-     "top5_clv_coverage": 0.7778,
-     "top5_dlogloss_model_minus_market": -0.04322,
+     "gameweeks": 5,
+     "rank1_n_priced_settled": 5,
+     "rank1_roi": -0.598,
+     "top3_n_priced_settled": 13,
+     "top3_roi": -0.54,
+     "top5_n_priced_settled": 20,
+     "top5_roi": -0.5875,
+     "top5_clv_mean": -6.036,
+     "top5_clv_coverage": 0.8,
+     "top5_dlogloss_model_minus_market": -0.03714,
      "status": "NOT_ENOUGH_DATA"
     }
    }
@@ -2126,15 +2126,15 @@
     },
     "OVER35": {
      "gameweeks": 4,
-     "rank1_n_priced_settled": 3,
-     "rank1_roi": -0.3,
-     "top3_n_priced_settled": 10,
-     "top3_roi": -0.164,
-     "top5_n_priced_settled": 13,
-     "top5_roi": -0.1838,
-     "top5_clv_mean": -3.871,
+     "rank1_n_priced_settled": 4,
+     "rank1_roi": -0.475,
+     "top3_n_priced_settled": 11,
+     "top3_roi": -0.24,
+     "top5_n_priced_settled": 14,
+     "top5_roi": -0.2421,
+     "top5_clv_mean": -4.134,
      "top5_clv_coverage": 1.0,
-     "top5_dlogloss_model_minus_market": 0.0206,
+     "top5_dlogloss_model_minus_market": 0.0158,
      "status": "NOT_ENOUGH_DATA"
     }
    }
@@ -2772,11 +2772,11 @@
      "rank1_roi": -0.051,
      "top3_n_priced_settled": 13,
      "top3_roi": -0.0412,
-     "top5_n_priced_settled": 20,
-     "top5_roi": -0.1568,
-     "top5_clv_mean": -2.806,
-     "top5_clv_coverage": 0.45,
-     "top5_dlogloss_model_minus_market": 0.01915,
+     "top5_n_priced_settled": 21,
+     "top5_roi": -0.124,
+     "top5_clv_mean": -3.081,
+     "top5_clv_coverage": 0.4762,
+     "top5_dlogloss_model_minus_market": 0.02024,
      "status": "NOT_ENOUGH_DATA"
     },
     "OU25": {
@@ -2785,11 +2785,11 @@
      "rank1_roi": -0.684,
      "top3_n_priced_settled": 13,
      "top3_roi": -0.29,
-     "top5_n_priced_settled": 20,
-     "top5_roi": -0.2365,
+     "top5_n_priced_settled": 21,
+     "top5_roi": -0.2729,
      "top5_clv_mean": -1.974,
-     "top5_clv_coverage": 0.5,
-     "top5_dlogloss_model_minus_market": 0.01705,
+     "top5_clv_coverage": 0.4762,
+     "top5_dlogloss_model_minus_market": 0.00898,
      "status": "NOT_ENOUGH_DATA"
     },
     "OVER15": {
@@ -2809,13 +2809,13 @@
      "gameweeks": 5,
      "rank1_n_priced_settled": 5,
      "rank1_roi": -0.6,
-     "top3_n_priced_settled": 13,
-     "top3_roi": -0.55,
-     "top5_n_priced_settled": 17,
-     "top5_roi": -0.4094,
-     "top5_clv_mean": -4.629,
-     "top5_clv_coverage": 0.5882,
-     "top5_dlogloss_model_minus_market": 0.01883,
+     "top3_n_priced_settled": 14,
+     "top3_roi": -0.5821,
+     "top5_n_priced_settled": 18,
+     "top5_roi": -0.4422,
+     "top5_clv_mean": -5.299,
+     "top5_clv_coverage": 0.6111,
+     "top5_dlogloss_model_minus_market": 0.01562,
      "status": "NOT_ENOUGH_DATA"
     }
    }
