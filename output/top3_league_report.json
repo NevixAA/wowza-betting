@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-28T01:29:21Z",
+ "generated_at": "2026-11-28T02:10:39Z",
  "selection_mode": "TOP3_LEAGUE_GW",
  "version": "TOP3-2",
  "freeze_lead_min": 120.0,
@@ -118,7 +118,7 @@
      "edge_calibrated": "",
      "slot": "T1_BEST_VALUE",
      "cell_status": "",
-     "result": "",
+     "result": "WIN",
      "stake": "0.0",
      "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
      "value_basis": "MODEL_EDGE",
@@ -135,7 +135,7 @@
      "edge_calibrated": "",
      "slot": "T2_SAFEST",
      "cell_status": "",
-     "result": "",
+     "result": "WIN",
      "stake": "0.0",
      "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
      "value_basis": "MODEL_EDGE",
@@ -168,17 +168,17 @@
    },
    "no_stake": {
     "picks": 3,
-    "settled": 0,
-    "won": 0,
-    "flat_pnl_units": 0.0,
-    "roi": null
+    "settled": 2,
+    "won": 2,
+    "flat_pnl_units": 1.06,
+    "roi": 0.53
    },
    "weeks_decided": 2,
    "picks": 3,
-   "settled": 0,
-   "won": 0,
-   "flat_pnl_units": 0.0,
-   "roi": null
+   "settled": 2,
+   "won": 2,
+   "flat_pnl_units": 1.06,
+   "roi": 0.53
   },
   "Brazil Serie A": {
    "league_rule": {
@@ -449,7 +449,7 @@
      "edge_calibrated": "0.019762",
      "slot": "T3_RISKY_VALUE",
      "cell_status": "UNPROVEN",
-     "result": "",
+     "result": "LOSS",
      "stake": "0.0",
      "stake_reason": "NO_STAKE_NO_VALUE",
      "value_basis": "CALIBRATED",
@@ -465,17 +465,17 @@
    },
    "no_stake": {
     "picks": 3,
-    "settled": 0,
+    "settled": 1,
     "won": 0,
-    "flat_pnl_units": 0.0,
-    "roi": null
+    "flat_pnl_units": -1.0,
+    "roi": -1.0
    },
    "weeks_decided": 2,
    "picks": 3,
-   "settled": 0,
+   "settled": 1,
    "won": 0,
-   "flat_pnl_units": 0.0,
-   "roi": null
+   "flat_pnl_units": -1.0,
+   "roi": -1.0
   },
   "Japan J-League": {
    "league_rule": {
@@ -587,7 +587,7 @@
      "edge_calibrated": "",
      "slot": "T1_BEST_VALUE",
      "cell_status": "",
-     "result": "",
+     "result": "LOSS",
      "stake": "0.0",
      "stake_reason": "NO_STAKE_NO_APPROVED_BAR",
      "value_basis": "MODEL_EDGE",
@@ -637,17 +637,17 @@
    },
    "no_stake": {
     "picks": 3,
-    "settled": 0,
+    "settled": 1,
     "won": 0,
-    "flat_pnl_units": 0.0,
-    "roi": null
+    "flat_pnl_units": -1.0,
+    "roi": -1.0
    },
    "weeks_decided": 1,
    "picks": 3,
-   "settled": 0,
+   "settled": 1,
    "won": 0,
-   "flat_pnl_units": 0.0,
-   "roi": null
+   "flat_pnl_units": -1.0,
+   "roi": -1.0
   },
   "League One": {
    "league_rule": {
